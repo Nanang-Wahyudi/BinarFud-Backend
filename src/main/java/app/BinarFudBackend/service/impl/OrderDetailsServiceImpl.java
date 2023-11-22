@@ -103,4 +103,20 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         );
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<OrderDetailsResponse> getOrderByUsername(String username) {
+        return ordersRepository.findOrdersByUsername(username).stream()
+                .map(o -> OrderDetailsResponse.builder()
+                        .username(o.getUsers().getUserName())
+                        .productName(o.getProducts().getProductName())
+                        .destinationAddress(o.getDestinationAddress())
+                        .quantity(o.getOrderDetails().get(0).getQuantity())
+                        .totalPrice(o.getOrderDetails().get(0).getTotalPrice())
+                        .orderTime(o.getOrderTime())
+                        .orderPhase(String.valueOf(o.getOrderPhase()))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
 }

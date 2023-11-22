@@ -168,7 +168,7 @@ public class MerchantsController {
 
     @GetMapping()
     public ResponseEntity<Object> getAllMerchantWithPage(
-            @RequestParam(name = "pages", defaultValue = "0") Integer pages,
+            @RequestParam(name = "pages", defaultValue = "1") Integer pages,
             @RequestParam(name = "limit", defaultValue = "2") Integer limit,
             @RequestParam(name = "sortBy", defaultValue = "merchantName") String sortBy,
             @RequestParam(name = "direction", defaultValue = "asc") String direction,

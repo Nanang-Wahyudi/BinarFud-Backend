@@ -1,5 +1,6 @@
 package app.BinarFudBackend.config;
 
+import app.BinarFudBackend.model.enumeration.ERole;
 import app.BinarFudBackend.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -36,9 +37,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 .antMatchers("/**", "/api/merchant", "/api/product", "/api/product/{merchantName}", "/api/auth/**", "/", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll( )
-//                .antMatchers("/api/user", "/api/notification/**").hasAuthority(ERole.ADMIN.name())
-//                .antMatchers("/api/merchant/**", "/api/image/**", "/api/product/**").hasAnyAuthority(ERole.MERCHANT.name(), ERole.ADMIN.name())
-//                .antMatchers("/api/order/**", "/api/invoice/**", "/api/user/update/**", "/api/user/delete/**", "/api/user/detail/**").hasAnyAuthority(ERole.CUSTOMER.name(), ERole.MERCHANT.name(), ERole.ADMIN.name())
+                .antMatchers("/api/user", "/api/notification/**").hasAuthority(ERole.ADMIN.name())
+                .antMatchers("/api/merchant/**", "/api/image/**", "/api/product/**").hasAnyAuthority(ERole.MERCHANT.name(), ERole.ADMIN.name())
+                .antMatchers("/api/order/**", "/api/invoice/**", "/api/user/update/**", "/api/user/delete/**", "/api/user/detail/**").hasAnyAuthority(ERole.CUSTOMER.name(), ERole.MERCHANT.name(), ERole.ADMIN.name())
                 .anyRequest()
                 .authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

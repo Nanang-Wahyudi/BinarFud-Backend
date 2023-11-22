@@ -103,6 +103,7 @@ public class MerchantsServiceImpl implements MerchantsService {
     @Transactional(readOnly = true)
     @Override
     public CompletableFuture<ResultPageResponse<MerchantsResponse>> getAllMerchantWithPage(Integer pages, Integer limit, String sortBy, String direction, String merchantName) {
+        pages -= 1;
         merchantName = StringUtils.isBlank(merchantName) ? "%" : merchantName + "%";
         Sort sort = Sort.by(new Sort.Order(PaginationUtils.getSortBy(direction), sortBy));
         Pageable pageable = PageRequest.of(pages, limit, sort);

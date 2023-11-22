@@ -94,4 +94,14 @@ public class OrderDetailsController {
         return ResponseEntity.ok(orderDetails);
     }
 
+    @GetMapping()
+    public ResponseEntity<Object> getOrderByUsername(@RequestParam String username) {
+        List<OrderDetailsResponse> orderByUsername = orderDetailsService.getOrderByUsername(username);
+        return ResponseEntity.ok(Response.builder()
+                .data(orderByUsername)
+                .successMessage("Order Details with Username '" + username + "' successfully displayed")
+                .isSuccess(Boolean.TRUE)
+                .build());
+    }
+
 }

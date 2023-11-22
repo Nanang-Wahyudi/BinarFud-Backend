@@ -13,4 +13,6 @@ public interface OrderDetailsService {
     Orders createOrder(OrderDetailsCreateRequest request) throws ExecutionException, InterruptedException;
 
     CompletableFuture<List<OrderDetailsResponse>> getAllOrderDetail();
+
+    List<OrderDetailsResponse> getOrderByUsername(String username);
 }
