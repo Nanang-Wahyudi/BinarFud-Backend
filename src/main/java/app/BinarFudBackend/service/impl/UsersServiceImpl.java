@@ -38,14 +38,6 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     private OtpUtil otpUtil;
 
-    /*
-    * Method addNewUser Sudah tidak digunakan, karena add user sudah menggunakan signin & signup
-    */
-//    @Override
-//    public Users addNewUser(Users users) {
-//        return usersRepository.save(users);
-//    }
-
     @Override
     public String verifyAccount(String email, String otp) {
         Users users = usersRepository.findByEmail(email)

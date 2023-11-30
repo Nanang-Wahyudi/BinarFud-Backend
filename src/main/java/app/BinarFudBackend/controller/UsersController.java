@@ -26,15 +26,6 @@ public class UsersController {
     @Autowired
     public UsersService usersService;
 
-    /*
-     * Method addUser Sudah tidak digunakan, karena add user sudah menggunakan signin & signup
-     */
-//    @PostMapping(value = "/add", consumes = "application/json")
-//    public String addUser(@RequestBody Users users) {
-//        usersService.addNewUser(users);
-//        return "Add New Product Successful";
-//    }
-
     @PutMapping("/verify-account")
     public ResponseEntity<String> verifyAccount(
             @RequestParam String email,

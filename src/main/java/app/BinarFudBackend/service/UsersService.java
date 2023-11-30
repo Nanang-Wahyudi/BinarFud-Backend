@@ -10,11 +10,6 @@ import java.util.concurrent.CompletableFuture;
 
 public interface UsersService {
 
-    /*
-     * Method addNewUser Sudah tidak digunakan, karena add user sudah menggunakan signin & signup
-     */
-//    Users addNewUser(Users users);
-
     String verifyAccount(String email, String otp);
 
     String regenerateOtp(String email);
