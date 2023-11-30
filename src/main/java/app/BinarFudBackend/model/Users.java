@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,6 +48,15 @@ public class Users {
     @NotBlank
     @Size(max = 120)
     private String password;
+
+    @NotBlank
+    private Boolean active;
+
+    @NotBlank
+    private String otp;
+
+    @NotBlank
+    private LocalDateTime otpGeneratedTime;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

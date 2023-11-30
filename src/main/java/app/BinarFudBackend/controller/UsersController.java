@@ -35,6 +35,18 @@ public class UsersController {
 //        return "Add New Product Successful";
 //    }
 
+    @PutMapping("/verify-account")
+    public ResponseEntity<String> verifyAccount(
+            @RequestParam String email,
+            @RequestParam String otp) {
+        return new ResponseEntity<>(usersService.verifyAccount(email, otp), HttpStatus.OK);
+    }
+
+    @PutMapping("/regenerate-otp")
+    public ResponseEntity<String> regenerateOtp(@RequestParam String email) {
+        return new ResponseEntity<>(usersService.regenerateOtp(email), HttpStatus.OK);
+    }
+
     @DeleteMapping(value = "/delete/{username}")
     public ResponseEntity<Response<Object>> deleteUser(@PathVariable("username") String username) {
 

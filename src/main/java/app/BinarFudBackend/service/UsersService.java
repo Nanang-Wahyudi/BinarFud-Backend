@@ -15,6 +15,10 @@ public interface UsersService {
      */
 //    Users addNewUser(Users users);
 
+    String verifyAccount(String email, String otp);
+
+    String regenerateOtp(String email);
+
     CompletableFuture<Boolean> deleteUserByUsername(String userName);
 
     CompletableFuture<Boolean> updateUserByUsername(String oldUsername, Users users);

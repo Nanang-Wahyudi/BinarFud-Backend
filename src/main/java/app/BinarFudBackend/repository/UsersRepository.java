@@ -29,4 +29,10 @@ public interface UsersRepository extends JpaRepository<Users, String> {
     Boolean existsByUserName(String username);
 
     Boolean existsByEmail(String email);
+
+    Optional<Users> findByEmail(String email);
+
+    @Query("SELECT u.active FROM Users u WHERE u.userName = :username")
+    Boolean findUserActiveByUsername(@Param("username") String username);
+
 }

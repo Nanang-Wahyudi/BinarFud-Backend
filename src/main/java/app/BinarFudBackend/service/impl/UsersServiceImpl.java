@@ -1,5 +1,7 @@
 package app.BinarFudBackend.service.impl;
 
+import app.BinarFudBackend.config.EmailUtil;
+import app.BinarFudBackend.config.OtpUtil;
 import app.BinarFudBackend.exception.BadRequestException;
 import app.BinarFudBackend.model.Users;
 import app.BinarFudBackend.model.response.UsersResponse;
@@ -11,6 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,6 +32,12 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private EmailUtil emailUtil;
+
+    @Autowired
+    private OtpUtil otpUtil;
+
     /*
     * Method addNewUser Sudah tidak digunakan, karena add user sudah menggunakan signin & signup
     */
@@ -34,6 +45,37 @@ public class UsersServiceImpl implements UsersService {
 //    public Users addNewUser(Users users) {
 //        return usersRepository.save(users);
 //    }
+
+    @Override
+    public String verifyAccount(String email, String otp) {
+        Users users = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with this email: " + email));
+        if (users.getOtp().equals(otp) &&
+                Duration.between(users.getOtpGeneratedTime(), LocalDateTime.now()).getSeconds() < (5 * 60)) {
+            users.setActive(true);
+            usersRepository.save(users);
+            return "OTP verified, you can log in";
+        }
+
+        return "Please regenerate OTP and try again";
+    }
+
+    @Override
+    public String regenerateOtp(String email) {
+        Users users = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with this email: " + email));
+        String otp = otpUtil.generateOtp();
+        try {
+            emailUtil.sendOtpEmail(email, otp);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Unable to send OTP please try again : " + e.getMessage());
+        }
+
+        users.setOtp(otp);
+        users.setOtpGeneratedTime(LocalDateTime.now());
+        usersRepository.save(users);
+        return "Email sent... please verify account withing 1 minute";
+    }
 
     @Async
     @Override

@@ -19,6 +19,7 @@ public class EmailController {
     @Autowired
     private JavaMailSender javaMailSender;
 
+//    Hanya Testing Email Semata
     @PostMapping("/send-email")
     public ResponseEntity<?> sendEmail(@RequestBody EmailRequest request) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();

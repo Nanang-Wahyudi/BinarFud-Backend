@@ -1,6 +1,8 @@
 package app.BinarFudBackend.controller;
 
+import app.BinarFudBackend.config.EmailUtil;
 import app.BinarFudBackend.config.JwtUtils;
+import app.BinarFudBackend.config.OtpUtil;
 import app.BinarFudBackend.model.Roles;
 import app.BinarFudBackend.model.UserDetailsImpl;
 import app.BinarFudBackend.model.Users;
@@ -20,12 +22,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,6 +51,12 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+    private EmailUtil emailUtil;
+
+    @Autowired
+    private OtpUtil otpUtil;
+
+    @Autowired
     private JwtUtils jwtUtils;
 
 
@@ -63,6 +71,12 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest login) {
+        Boolean users = usersRepository.findUserActiveByUsername(login.getUsername());
+        if (!users) {
+            return ResponseEntity.ok(new JwtResponse("Account not verified", "failed", "failed",
+                    "failed", Collections.singletonList("failed")));
+        }
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword())
         );
@@ -81,6 +95,13 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
+        String otp = otpUtil.generateOtp();
+        try {
+            emailUtil.sendOtpEmail(signupRequest.getEmail(), otp);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Unable to send OTP please try again : " + e.getMessage());
+        }
+
         Boolean usernameExist = usersRepository.existsByUserName(signupRequest.getUsername());
         if(Boolean.TRUE.equals(usernameExist)) {
             return ResponseEntity.badRequest()
@@ -111,6 +132,9 @@ public class AuthController {
             });
         }
         users.setRoles(roles);
+        users.setOtp(otp);
+        users.setActive(false);
+        users.setOtpGeneratedTime(LocalDateTime.now());
         usersRepository.save(users);
         return ResponseEntity.ok(new MessageResponse("User registered successfully"));
     }
