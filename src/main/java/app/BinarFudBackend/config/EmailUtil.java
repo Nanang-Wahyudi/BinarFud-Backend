@@ -20,13 +20,21 @@ public class EmailUtil {
         messageHelper.setTo(email);
         messageHelper.setSubject("Verify OTP");
         messageHelper.setText("Hello, your OTP is " + otp);
-//        messageHelper.setText(String.format("""
-//           <div>
-//              <a href="http://localhost:8080/verify-account?email=%s&otp=%s" target="_blank">
-//                Klik Link untuk Verifikasi
-//              </a>
-//           </div>
-//        """, email, otp), true);
+
+        javaMailSender.send(mimeMessage);
+    }
+
+    public void sendSetPasswordEmail(String email) throws MessagingException {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+        messageHelper.setTo(email);
+        messageHelper.setSubject("Verify Set Password");
+        messageHelper.setText(String.format(
+             "<div>" +
+             "    <a href=\"http://localhost:8080/api/user/set-password?email=%s\" target=\"_blank\">" +
+             "        Click Link to Set Password" +
+             "    </a>" +
+             "</div>", email), true);
 
         javaMailSender.send(mimeMessage);
     }

@@ -69,6 +69,30 @@ public class UsersServiceImpl implements UsersService {
         return "Email sent... please verify account withing 1 minute";
     }
 
+    @Override
+    public String forgotPassword(String email) {
+        Users users = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with this email: " + email));
+        try {
+            emailUtil.sendSetPasswordEmail(email);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Unable to send Set Password email please try again : " + e.getMessage());
+        }
+
+        return "Please check your email to Set New Password to your account";
+    }
+
+    @Override
+    public String setPassword(String email, String newPassword) {
+        Users users = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with this email: " + email));
+
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        users.setPassword(encodedPassword);
+        usersRepository.save(users);
+        return "New Password set successful login with New Password";
+    }
+
     @Async
     @Override
     public CompletableFuture<Boolean> deleteUserByUsername(String userName) {

@@ -14,6 +14,10 @@ public interface UsersService {
 
     String regenerateOtp(String email);
 
+    String forgotPassword(String email);
+
+    String setPassword(String email, String newPassword);
+
     CompletableFuture<Boolean> deleteUserByUsername(String userName);
 
     CompletableFuture<Boolean> updateUserByUsername(String oldUsername, Users users);

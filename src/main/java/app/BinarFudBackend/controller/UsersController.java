@@ -38,6 +38,18 @@ public class UsersController {
         return new ResponseEntity<>(usersService.regenerateOtp(email), HttpStatus.OK);
     }
 
+    @PutMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
+        return new ResponseEntity<>(usersService.forgotPassword(email), HttpStatus.OK);
+    }
+
+    @PutMapping("/set-password")
+    public ResponseEntity<String> setPassword(
+            @RequestParam String email,
+            @RequestHeader String newPassword) {
+        return new ResponseEntity<>(usersService.setPassword(email, newPassword), HttpStatus.OK);
+    }
+
     @DeleteMapping(value = "/delete/{username}")
     public ResponseEntity<Response<Object>> deleteUser(@PathVariable("username") String username) {
 
