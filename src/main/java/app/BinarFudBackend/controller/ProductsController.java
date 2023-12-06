@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+@CrossOrigin(origins = "*")
 @RestController
 @Slf4j
 @RequestMapping(value = "/api/product")
